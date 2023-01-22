@@ -22,7 +22,7 @@ import ThemeToggle from "./ThemeToggle.vue";
 <script lang="ts">
 export default {
   props: {
-    closeMethod : Function,
+    closeMethod : Function
   },
 };
 </script>

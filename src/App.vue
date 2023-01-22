@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import SnackbarNotification from "./components/SnackbarNotification.vue";
 import StatsIcon from "./components/StatsIcon.vue";
 import SettingsIcon from "./components/SettingsIcon.vue";
 import StatsModal from "./components/StatsModal.vue";
@@ -13,16 +14,13 @@ import WordplayTitle from "./components/WordplayTitle.vue";
       <SettingsIcon @click="openSettings" />
       <StatsIcon @click="openStats" />
     </header>
-
-
-
-
+    <SnackbarNotification :text="notificationText"/>
     <div v-if="settingsOpen">
-      <div class="outside" @click="closeSettings"></div>
-      <SettingsModal :class="settingsClosing ? `closed` : ``" :closeMethod="closeSettings" />
+      <div :class="settingsClosing ? `outside closed` : `outside`" @click="closeSettings"></div>
+      <SettingsModal :class="settingsClosing ? `closed` : ``" :close-method="closeSettings"/>
     </div>
     <div v-else-if="statsOpen">
-      <div class="outside" @click="closeStats"></div>
+      <div :class="statsClosing ? `outside closed` : `outside`" @click="closeStats"></div>
       <StatsModal :class="statsClosing ? `closed` : ``" :closeMethod="closeStats"/>
     </div>
   </v-app>
@@ -60,6 +58,8 @@ export default {
       statsOpen: false,
       settingsClosing: false,
       statsClosing: false,
+      notificationText : "",
+      notificationTimeout : 0,
     };
   },
   methods: {
@@ -70,7 +70,6 @@ export default {
       this.statsOpen = true;
     },
     closeSettings: function () {
-      console.log(this);
       this.settingsClosing = true;
       setTimeout(() => {
         this.settingsOpen = false;
@@ -84,14 +83,32 @@ export default {
         this.statsClosing = false;
       }, 300);
     },
+    showNotification(text: string, duration : number){
+      this.notificationText = text;
+      clearTimeout(this.notificationTimeout);
+      let x : HTMLElement = document.getElementById("snackbar")!;
+      x.className = "show";
+      this.notificationTimeout = setTimeout(function(){ x.className = x.className.replace("show", "hide"); }, duration);
+    }
   },
 };
 </script>
 
-<style scoped>
+<style>
+:root {
+  --modal-overlay-background-colour: rgba(0, 0, 0, 0.5);
+  --modal-animation-speed: 300ms;
+}
+
 body,
 html {
   overflow: hidden;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+body::-webkit-scrollbar{
+  display: none;
 }
 
 .app {
@@ -106,7 +123,13 @@ html {
   height: 100vh;
   top: 0;
   left: 0;
-  background-color: rgba(0, 0, 0, 0.25);
+  background-color: var(--modal-overlay-background-colour);
+  animation: fadein var(--modal-animation-speed) ease-in;
+}
+
+.outside.closed {
+  background-color: rgba(0, 0, 0, 0);
+  animation: fadeout var(--modal-animation-speed) ease-in;
 }
 
 .modal {
@@ -117,12 +140,30 @@ html {
   top: 0;
   bottom: 0;
   margin: auto;
-  animation: flyup 300ms ease-out;
+  animation: flyup var(--modal-animation-speed) ease-out;
 }
 
 .modal.closed {
   top: 100vh;
-  animation: flydown 300ms ease-in;
+  animation: flydown var(--modal-animation-speed) ease-in;
+}
+
+@keyframes fadeout {
+  0% {
+    background-color: var(--modal-overlay-background-colour);
+  }
+  100% {
+    background-color: rgba(0, 0, 0, 0);
+  }
+}
+
+@keyframes fadein {
+  0% {
+    background-color: rgba(0, 0, 0, 0);
+  }
+  100% {
+    background-color: var(--modal-overlay-background-colour);
+  }
 }
 
 @keyframes flyup {

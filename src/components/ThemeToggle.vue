@@ -27,7 +27,7 @@ export default {
       localStorage.setItem("theme", "dark");
     }
 
-    const setTheme = (themeName: string) => {
+    function setTheme(themeName: string) {
       theme.global.name.value = themeName;
       localStorage.setItem("theme", themeName);
     };
