@@ -1,10 +1,6 @@
-<script setup lang="ts">
-import ThemeToggle from "./ThemeToggle.vue";
-</script>
-
 <template>
   <v-card class="modal">
-    <h2 class="heading">Settings</h2>
+    <h2 class="heading">License Details</h2>
     <v-btn
       class="close-button"
       variant="text"
@@ -13,24 +9,26 @@ import ThemeToggle from "./ThemeToggle.vue";
       @click="closeMethod"
     />
     <div class="content">
-      <h3 class="heading">Theme</h3>
-      <ThemeToggle />
+      <h3 class="heading">License</h3>
+      <a href="https://www.gnu.org/licenses/gpl-3.0.html" target="_blank"><h4>https://www.gnu.org/licenses/gpl-3.0.html</h4></a>
+      <h3 class="heading">Source Repository</h3>
+      <a href="https://github.com/metype/wordplay-new" target="_blank"><h4>https://github.com/metype/wordplay-new</h4></a>
     </div>
   </v-card>
 </template>
 
 <script lang="ts">
-export default {
-  props: {
-    closeMethod : Function
-  },
-};
+  export default {
+    props: {
+      closeMethod : Function,
+    },
+  };
 </script>
 
 <style scoped>
 .modal {
-  width: 40rem;
-  max-height: 90vh;
+  width: 30rem;
+  max-height: 25vh;
   position: absolute;
   left: 0;
   right: 0;
@@ -58,6 +56,11 @@ h2.heading {
   width: 80%;
   border-bottom: 1px solid rgb(var(--v-theme-on-background));
   text-align: left;
+}
+
+.heading-container {
+  margin-top:0;
+  position: relative;
 }
 
 .close-button {

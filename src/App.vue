@@ -5,6 +5,7 @@ import SettingsIcon from "./components/SettingsIcon.vue";
 import StatsModal from "./components/StatsModal.vue";
 import SettingsModal from "./components/SettingsModal.vue";
 import WordplayTitle from "./components/WordplayTitle.vue";
+import LicenseModal from "./components/LicenseModal.vue";
 </script>
 
 <template>
@@ -23,6 +24,13 @@ import WordplayTitle from "./components/WordplayTitle.vue";
       <div :class="statsClosing ? `outside closed` : `outside`" @click="closeStats"></div>
       <StatsModal :class="statsClosing ? `closed` : ``" :closeMethod="closeStats"/>
     </div>
+    <div v-else-if="licenseOpen">
+      <div :class="licenseClosing ? `outside closed` : `outside`" @click="closeLicense"></div>
+      <LicenseModal :class="licenseClosing ? `closed` : ``" :closeMethod="closeLicense"/>
+    </div>
+    <p class="copyright" title="License Details" @click="openLicense" >
+      Copyright (C) 2023 Metype
+    </p>
   </v-app>
 </template>
 
@@ -30,67 +38,77 @@ import WordplayTitle from "./components/WordplayTitle.vue";
 import { useTheme } from "vuetify";
 
 export default {
-  mounted: function() {
-    const theme = useTheme();
-    const vals : Object = {
-      "wins" : 0,
-      "losses": 0,
-      "theme": "dark"
-    }
-
-    let val: keyof typeof vals
-    for (val in vals) {
-      if(localStorage.getItem(val) == null){
-        localStorage.setItem(val, vals[val].toString());
-      }
-    }
-
-    const setTheme = (themeName: string) => {
-      theme.global.name.value = themeName;
-      localStorage.setItem("theme", themeName);
-    };
-
-    setTheme(localStorage.getItem("theme")!);
-  },
-  data() {
-    return {
-      settingsOpen: false,
-      statsOpen: false,
-      settingsClosing: false,
-      statsClosing: false,
-      notificationText : "",
-      notificationTimeout : 0,
-    };
-  },
-  methods: {
-    openSettings: function () {
-      this.settingsOpen = true;
+    mounted: function () {
+        const theme = useTheme();
+        const vals: Object = {
+            "wins": 0,
+            "losses": 0,
+            "theme": "dark"
+        };
+        let val: keyof typeof vals;
+        for (val in vals) {
+            if (localStorage.getItem(val) == null) {
+                localStorage.setItem(val, vals[val].toString());
+            }
+        }
+        const setTheme = (themeName: string) => {
+            theme.global.name.value = themeName;
+            localStorage.setItem("theme", themeName);
+        };
+        setTheme(localStorage.getItem("theme")!);
     },
-    openStats: function () {
-      this.statsOpen = true;
+    data() {
+        return {
+            settingsOpen: false,
+            statsOpen: false,
+            licenseOpen: false,
+            settingsClosing: false,
+            statsClosing: false,
+            licenseClosing: false,
+            notificationText: "",
+            notificationTimeout: 0,
+        };
     },
-    closeSettings: function () {
-      this.settingsClosing = true;
-      setTimeout(() => {
-        this.settingsOpen = false;
-        this.settingsClosing = false;
-      }, 300);
+    methods: {
+        openSettings: function () {
+            this.settingsOpen = true;
+        },
+        openStats: function () {
+            this.statsOpen = true;
+        },
+        openLicense: function () {
+            this.licenseOpen = true;
+        },
+        closeSettings: function () {
+            this.settingsClosing = true;
+            setTimeout(() => {
+                this.settingsOpen = false;
+                this.settingsClosing = false;
+            }, 300);
+        },
+        closeStats: function () {
+            this.statsClosing = true;
+            setTimeout(() => {
+                this.statsOpen = false;
+                this.statsClosing = false;
+            }, 300);
+        },
+        closeLicense: function () {
+            this.licenseClosing = true;
+            setTimeout(() => {
+                this.licenseOpen = false;
+                this.licenseClosing = false;
+            }, 300);
+        },
+        showNotification(text: string, duration: number) {
+            this.notificationText = text;
+            clearTimeout(this.notificationTimeout);
+            let x: HTMLElement = document.getElementById("snackbar")!;
+            x.className = "show";
+            this.notificationTimeout = setTimeout(function () { x.className = x.className.replace("show", "hide"); }, duration);
+        }
     },
-    closeStats: function () {
-      this.statsClosing = true;
-      setTimeout(() => {
-        this.statsOpen = false;
-        this.statsClosing = false;
-      }, 300);
-    },
-    showNotification(text: string, duration : number){
-      this.notificationText = text;
-      clearTimeout(this.notificationTimeout);
-      let x : HTMLElement = document.getElementById("snackbar")!;
-      x.className = "show";
-      this.notificationTimeout = setTimeout(function(){ x.className = x.className.replace("show", "hide"); }, duration);
-    }
-  },
+    components: { LicenseModal }
 };
 </script>
 
@@ -109,6 +127,16 @@ html {
 
 body::-webkit-scrollbar{
   display: none;
+}
+
+.copyright {
+  user-select: none;
+  cursor: pointer;
+  font-size: 12px;
+  position: absolute;
+  bottom: 0;
+  left: .1rem;
+  text-align: left;
 }
 
 .app {
@@ -134,12 +162,6 @@ body::-webkit-scrollbar{
 
 .modal {
   user-select: none;
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 0;
-  bottom: 0;
-  margin: auto;
   animation: flyup var(--modal-animation-speed) ease-out;
 }
 
