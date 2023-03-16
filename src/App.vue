@@ -37,6 +37,11 @@ import LicenseModal from "./components/LicenseModal.vue";
 <script lang="ts">
 import { useTheme } from "vuetify";
 
+type SnackbarNotif = {
+  text : string,
+  duration : number,
+}
+
 export default {
     mounted: function () {
         const theme = useTheme();
@@ -67,6 +72,7 @@ export default {
             licenseClosing: false,
             notificationText: "",
             notificationTimeout: 0,
+            notificationQueue : [] as SnackbarNotif[]
         };
     },
     methods: {
@@ -101,11 +107,23 @@ export default {
             }, 300);
         },
         showNotification(text: string, duration: number) {
-            this.notificationText = text;
-            clearTimeout(this.notificationTimeout);
-            let x: HTMLElement = document.getElementById("snackbar")!;
-            x.className = "show";
-            this.notificationTimeout = setTimeout(function () { x.className = x.className.replace("show", "hide"); }, duration);
+            this.notificationQueue.push({text, duration});
+            if(this.notificationTimeout == 0){
+              this.updateNotification();
+            }
+        },
+        clearNotificationTimeout() {
+          clearTimeout(this.notificationTimeout);
+          this.notificationTimeout = 0;
+        },
+        updateNotification() {
+          const notifParameters : SnackbarNotif | undefined = this.notificationQueue.shift();
+          this.clearNotificationTimeout();
+          if(notifParameters == undefined) return;
+          this.notificationText = notifParameters.text;
+          let x: HTMLElement = document.getElementById("snackbar")!;
+          x.className = "show";
+          this.notificationTimeout = setTimeout(function (thisVal : any) { x.className = x.className.replace("show", "hide"); thisVal.updateNotification()}, notifParameters.duration, this);
         }
     },
     components: { LicenseModal }

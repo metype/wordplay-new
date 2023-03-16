@@ -33,12 +33,13 @@ export default {};
 
 .settings-icon .description {
   width: 0;
+  margin-right: 0rem;
   white-space: nowrap;
   overflow: hidden;
 }
 
 .settings-icon:hover .description {
-  width: 6.5rem;
+  width: 7.5rem;
   padding-left: 0;
   animation: type 400ms ease;
 }
