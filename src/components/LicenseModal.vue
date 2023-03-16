@@ -27,7 +27,7 @@
 
 <style scoped>
 .modal {
-  width: 30rem;
+  max-width: min(30rem, 80vw);
   max-height: 25vh;
   position: absolute;
   left: 0;

@@ -46,7 +46,7 @@ import ThemeToggle from "./ThemeToggle.vue";
 
 <style scoped>
 .modal {
-  width: 20rem;
+  max-width: min(20rem, 80vw);
   max-height: 45vh;
   position: absolute;
   left: 0;

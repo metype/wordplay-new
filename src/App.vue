@@ -5,6 +5,7 @@ import SettingsIcon from "./components/SettingsIcon.vue";
 import StatsModal from "./components/StatsModal.vue";
 import SettingsModal from "./components/SettingsModal.vue";
 import WordplayTitle from "./components/WordplayTitle.vue";
+import WordplayBoard from "./components/WordplayBoard.vue";
 import LicenseModal from "./components/LicenseModal.vue";
 </script>
 
@@ -15,6 +16,7 @@ import LicenseModal from "./components/LicenseModal.vue";
       <SettingsIcon @click="openSettings" />
       <StatsIcon @click="openStats" />
     </header>
+    <WordplayBoard/>
     <SnackbarNotification :text="notificationText"/>
     <div v-if="settingsOpen">
       <div :class="settingsClosing ? `outside closed` : `outside`" @click="closeSettings"></div>

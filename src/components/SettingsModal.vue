@@ -29,7 +29,7 @@ export default {
 
 <style scoped>
 .modal {
-  width: 40rem;
+  max-width: min(40rem, 80vw);
   max-height: 90vh;
   position: absolute;
   left: 0;
